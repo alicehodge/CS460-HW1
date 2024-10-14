@@ -1,0 +1,42 @@
+﻿@model CS460_HW1.Models.TeamForm
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-8">
+            <h2 class="py-2">Team Generator</h2>
+            <form id="teamForm" asp-action="Submit" asp-controller="Home" method="post" onsubmit="return validateForm()">
+                <div class="form-group">
+                    <label for="names">List of Names (one per line):</label>
+                    <textarea class="form-control" id="names" name="Names" rows="5" required></textarea>
+                </div>
+                <div class="form-group py-2">
+                    <label for="teamSize">Team Size:</label>
+                    <input type="number" class="form-control" id="teamSize" name="TeamSize" min="2" max="10" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function validateForm() {
+        const names = document.getElementById('names').value.trim().split('\n');
+        const teamSize = parseInt(document.getElementById('teamSize').value, 10);
+        const namePattern = /^[a-zA-Z\s,.\-_']+$/;
+        
+        for (let name of names) {
+            if (!namePattern.test(name.trim())) {
+                alert('Each name must contain only allowed characters: letters, spaces, ,.-_\'');
+                return false;
+            }
+        }
+
+        if (isNaN(teamSize) || teamSize < 2 || teamSize > 10) {
+            alert('Team size must be an integer between 2 and 10.');
+            return false;
+        }
+
+        return true;
+    }
+</script>

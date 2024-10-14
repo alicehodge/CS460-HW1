@@ -1,0 +1,59 @@
+@model List<CS460_HW1.Models.Team>
+
+@{
+    ViewData["Title"] = "Teams";
+    var random = new System.Random();
+
+    string GetRandomHexColor()
+    {
+        return $"#{random.Next(0x1000000):X6}";
+    }
+}
+
+<div class="container">
+    <h2>Teams</h2>
+    <button id="assignAnimalNames" class="btn btn-primary mb-3">Assign Animal Names</button>
+
+    <div class="row">
+        @foreach (var team in Model)
+        {
+            var headerColor = GetRandomHexColor();
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header" style="background-color:@headerColor; color: white;">
+                        Team @team.TeamNumber
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            @foreach (var member in team.Members)
+                            {
+                                <li class="list-group-item">@member</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let animalNames = [];
+
+        fetch('/txt/animals.txt')
+            .then(response => response.text())
+            .then(data => {
+                animalNames = data.split('\n').map(name => name.trim()).filter(name => name.length > 0);
+            })
+            .catch(error => console.error('Error fetching animal names:', error));
+
+        document.getElementById('assignAnimalNames').addEventListener('click', function() {
+            const headers = document.querySelectorAll('.card-header');
+            headers.forEach(header => {
+                const randomIndex = Math.floor(Math.random() * animalNames.length);
+                header.textContent = animalNames[randomIndex];
+            });
+        });
+    });
+</script>
